@@ -2,6 +2,38 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export type MessageSender = 'user' | 'assistant' | 'system';
 
+export class SystemPromptEntity {
+  @ApiProperty({
+    description: 'The id of the system prompt',
+    example: '1',
+  })
+  id: string;
+
+  @ApiProperty({
+    description: 'The text of the system prompt',
+    example: 'Hello, how can I help you?',
+  })
+  text: string;
+
+  @ApiProperty({
+    description: 'The timestamp when the system prompt was created',
+    example: 1622072639,
+  })
+  createdAt: number;
+
+  @ApiProperty({
+    description: 'The timestamp when the system prompt was last updated',
+    example: 1622072639,
+  })
+  updatedAt: number;
+
+  @ApiProperty({
+    description: 'Whether or not this is the current default system prompt',
+    example: true,
+  })
+  current: boolean;
+}
+
 export class MessageEntity {
   @ApiProperty({
     description: 'The id of the message',
@@ -71,38 +103,6 @@ export class ChatEntity {
     example: 1622072639,
   })
   updatedAt: number;
-}
-
-export class SystemPromptEntity {
-  @ApiProperty({
-    description: 'The id of the system prompt',
-    example: '1',
-  })
-  id: string;
-
-  @ApiProperty({
-    description: 'The text of the system prompt',
-    example: 'Hello, how can I help you?',
-  })
-  text: string;
-
-  @ApiProperty({
-    description: 'The timestamp when the system prompt was created',
-    example: 1622072639,
-  })
-  createdAt: number;
-
-  @ApiProperty({
-    description: 'The timestamp when the system prompt was last updated',
-    example: 1622072639,
-  })
-  updatedAt: number;
-
-  @ApiProperty({
-    description: 'Whether or not this is the current default system prompt',
-    example: true,
-  })
-  current: boolean;
 }
 
 export class CreateChatParamsEntity {
