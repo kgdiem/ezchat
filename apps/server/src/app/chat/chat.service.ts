@@ -1,11 +1,11 @@
-import { Chat, Message, MessageSender } from '@ezchat/types';
 import { Injectable } from '@nestjs/common';
 import { randomUUID } from 'crypto';
 import { Knex } from 'knex';
 import { InjectKnex } from 'nestjs-knex';
 import { SystemPromptsService } from '../system-prompts/system-prompts.service';
+import { ChatEntity, MessageEntity, MessageSender } from '../entities';
 
-type DatabaseChat = Omit<Chat, 'messages' | 'systemPrompt'> & {
+type DatabaseChat = Omit<ChatEntity, 'messages' | 'systemPrompt'> & {
   systemPromptId: string;
 };
 
@@ -22,7 +22,7 @@ export class ChatService {
     return this.knex('chats').select('*').orderBy('updatedAt', 'desc');
   }
 
-  async getChat(id: string): Promise<Chat> {
+  async getChat(id: string): Promise<ChatEntity> {
     await this.ensureSchemas();
 
     const chat = await this.knex<DatabaseChat>('chats').where({ id }).first();
@@ -31,7 +31,7 @@ export class ChatService {
       return null;
     }
 
-    const messages = await this.knex<Message>('messages')
+    const messages = await this.knex<MessageEntity>('messages')
       .where('chatId', id)
       .orderBy('timestamp', 'desc');
 
@@ -74,7 +74,7 @@ export class ChatService {
   ): Promise<string> {
     await this.ensureSchemas();
 
-    const chat = await this.knex<Partial<Chat>>('chats')
+    const chat = await this.knex<Partial<ChatEntity>>('chats')
       .where({ id: chatId })
       .first();
 

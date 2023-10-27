@@ -1,26 +1,28 @@
-import { SystemPrompt } from '@ezchat/types';
 import { Injectable } from '@nestjs/common';
 import { randomUUID } from 'crypto';
 import { Knex } from 'knex';
 import { InjectKnex } from 'nestjs-knex';
+import { SystemPromptEntity } from '../entities';
 
 @Injectable()
 export class SystemPromptsService {
   constructor(@InjectKnex() private readonly knex: Knex) {}
 
-  async getSystemPrompts(): Promise<SystemPrompt[]> {
+  async getSystemPrompts(): Promise<SystemPromptEntity[]> {
     await this.ensureSchema();
 
-    return this.knex<SystemPrompt>('system_prompts')
+    return this.knex<SystemPromptEntity>('system_prompts')
       .select('*')
       .orderBy('updatedAt', 'desc')
       .orderBy('current', 'desc');
   }
 
-  async getSystemPrompt(id: string): Promise<SystemPrompt> {
+  async getSystemPrompt(id: string): Promise<SystemPromptEntity> {
     await this.ensureSchema();
 
-    return this.knex<SystemPrompt>('system_prompts').where({ id }).first();
+    return this.knex<SystemPromptEntity>('system_prompts')
+      .where({ id })
+      .first();
   }
 
   async addSystemPrompt(text: string): Promise<string> {
@@ -28,7 +30,7 @@ export class SystemPromptsService {
 
     const id = randomUUID();
 
-    const prompt: SystemPrompt = {
+    const prompt: SystemPromptEntity = {
       id,
       text,
       createdAt: new Date().getTime(),
@@ -36,7 +38,7 @@ export class SystemPromptsService {
       current: true,
     };
 
-    await this.knex<SystemPrompt>('system_prompts').insert(prompt);
+    await this.knex<SystemPromptEntity>('system_prompts').insert(prompt);
 
     return id;
   }
@@ -44,7 +46,9 @@ export class SystemPromptsService {
   async deleteSystemPrompt(id: string): Promise<void> {
     await this.ensureSchema();
 
-    await this.knex<SystemPrompt>('system_prompts').where({ id }).delete();
+    await this.knex<SystemPromptEntity>('system_prompts')
+      .where({ id })
+      .delete();
   }
 
   async updateSystemPrompt(
@@ -54,7 +58,7 @@ export class SystemPromptsService {
   ): Promise<void> {
     await this.ensureSchema();
 
-    await this.knex<SystemPrompt>('system_prompts')
+    await this.knex<SystemPromptEntity>('system_prompts')
       .where({ id })
       .update({ text, current });
   }

@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import OpenAI from 'openai';
 import { SystemPromptsService } from '../system-prompts/system-prompts.service';
 import { ChatService } from '../chat/chat.service';
-import { Chat } from '@ezchat/types';
+import { ChatEntity } from '../entities';
 
 @Injectable()
 export class ChatManager {
@@ -17,7 +17,10 @@ export class ChatManager {
     });
   }
 
-  async createChat(systemPromptId: string, userPrompt: string): Promise<Chat> {
+  async createChat(
+    systemPromptId: string,
+    userPrompt: string
+  ): Promise<ChatEntity> {
     const systemPrompt = await this.systemPromptsService.getSystemPrompt(
       systemPromptId
     );
@@ -52,7 +55,7 @@ export class ChatManager {
     return this.chatService.getChat(chatId);
   }
 
-  async sendMessage(chatId: string, userPrompt: string): Promise<Chat> {
+  async sendMessage(chatId: string, userPrompt: string): Promise<ChatEntity> {
     const chat = await this.chatService.getChat(chatId);
 
     if (!chat) {
