@@ -1,11 +1,26 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
+import { KnexModule } from 'nestjs-knex';
 
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { ChatModule } from './chat/chat.module';
+import { SystemPromptsModule } from './system-prompts/system-prompts.module';
 
 @Module({
-  imports: [],
-  controllers: [AppController],
-  providers: [AppService],
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
+    KnexModule.forRoot({
+      config: {
+        client: 'sqlite3',
+        useNullAsDefault: true,
+        connection: ':memory:',
+      },
+    }),
+    ChatModule,
+    SystemPromptsModule,
+  ],
+  controllers: [],
+  providers: [],
 })
 export class AppModule {}
